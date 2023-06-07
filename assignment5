@@ -1748,38 +1748,44 @@ void drawPowerUI() {
 
 void drawNpcHP() {
     SetCurrentCursorPos(STATUS_MENU_WINDOW_X, STATUS_MENU_WINDOW_Y + 6);
-    if (bossCharacter.boss_hp == 10) {
-        printf("보스 HP : ■■■■■■■■■■");
-    }
-    else if (bossCharacter.boss_hp == 9) {
-        printf("보스 HP : ■■■■■■■■■□");
-    }
-    else if (bossCharacter.boss_hp == 8) {
-        printf("보스 HP : ■■■■■■■■□□");
-    }
-    else if (bossCharacter.boss_hp == 7) {
-        printf("보스 HP : ■■■■■■■□□□");
-    }
-    else if (bossCharacter.boss_hp == 6) {
-        printf("보스 HP : ■■■■■■□□□□");
-    }
-    else if (bossCharacter.boss_hp == 5) {
-        printf("보스 HP : ■■■■■□□□□□");
-    }
-    else if (bossCharacter.boss_hp == 4) {
-        printf("보스 HP : ■■■■□□□□□□");
-    }
-    else if (bossCharacter.boss_hp == 3) {
-        printf("보스 HP : ■■■□□□□□□□");
-    }
-    else if (bossCharacter.boss_hp == 2) {
-        printf("보스 HP : ■■□□□□□□□□");
-    }
-    else if (bossCharacter.boss_hp == 1) {
-        printf("보스 HP : ■□□□□□□□□□");
+
+    if (stageNum == 4) {
+        if (bossCharacter.boss_hp == 10) {
+            printf("보스 HP : ■■■■■■■■■■");
+        }
+        else if (bossCharacter.boss_hp == 9) {
+            printf("보스 HP : ■■■■■■■■■□");
+        }
+        else if (bossCharacter.boss_hp == 8) {
+            printf("보스 HP : ■■■■■■■■□□");
+        }
+        else if (bossCharacter.boss_hp == 7) {
+            printf("보스 HP : ■■■■■■■□□□");
+        }
+        else if (bossCharacter.boss_hp == 6) {
+            printf("보스 HP : ■■■■■■□□□□");
+        }
+        else if (bossCharacter.boss_hp == 5) {
+            printf("보스 HP : ■■■■■□□□□□");
+        }
+        else if (bossCharacter.boss_hp == 4) {
+            printf("보스 HP : ■■■■□□□□□□");
+        }
+        else if (bossCharacter.boss_hp == 3) {
+            printf("보스 HP : ■■■□□□□□□□");
+        }
+        else if (bossCharacter.boss_hp == 2) {
+            printf("보스 HP : ■■□□□□□□□□");
+        }
+        else if (bossCharacter.boss_hp == 1) {
+            printf("보스 HP : ■□□□□□□□□□");
+        }
+        else {
+            printf("보스 HP : □□□□□□□□□□");
+        }
     }
     else {
-        printf("보스 HP : □□□□□□□□□□");
+        printf("%적의 수 : %d", countnpc());
     }
 }
 int nextStage() {
