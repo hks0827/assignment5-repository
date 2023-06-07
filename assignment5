@@ -25,7 +25,7 @@ typedef enum ColorType {
 }COLOR;
 enum Block {
     BlockSolid = 100,
-    BlockWeak,
+    BlockWeak=101
 }BLOCK;
 enum Item {
     ItemHeart = 200,
@@ -108,14 +108,14 @@ int gameBoardInfo[GBOARD_HEIGHT + 2][GBOARD_WIDTH + 2] = {
 void firstTimeBoardInfo(double current_time, int x, int y)
 {
     TimeBoardInfo[y][x] = current_time;
-    printf("%d %d", x, y);
+   
 
 }
 void putBomb(int x, int y)
 {
     if (isBombNum(x, y) == 1)
     {
-        printf("%d %d",x,y);
+       
         gameBoardInfo[y][(x)] = 300;
         time_t start = time(NULL);
         double current_time = (double)start;
@@ -144,13 +144,118 @@ int isBombNum(int x, int y)
 int  isMiddleBomb(int i, int j)
 
 {
-    if (gameBoardInfo[i][j] >= BombFour && gameBoardInfo[i][j] <= BombZero)
+    if (gameBoardInfo[i][j] >= BombFour && gameBoardInfo[i][j] <= BombOne2)
     {
         return 1;
     }
     else return 0;
 
 }
+
+int isFinalBomb(int i, int j)
+{
+    if (gameBoardInfo[i][j] == BombOne2)
+    {
+        return 1;
+    }
+    else return 0;
+}
+int isWaterLine(int i, int j)
+{
+    if (gameBoardInfo[i][j] == BombZero)
+        return 1;
+    else return 0;
+
+}
+int  detectCharacter(int i, int j)
+{
+    if (gameBoardInfo[i][j] == 400)
+    {
+        MainCharacter.hp--;
+        printf("캐릭터hp:%d", MainCharacter.hp);
+        return 1;
+    }
+    return 0;
+}
+int detectBlock(int i, int j)
+{
+    if (gameBoardInfo[i][j] == BlockWeak)return 0;
+    if (gameBoardInfo[i][j] == BlockSolid)return 1;
+
+
+
+    return 0;
+}
+void explosion()
+{
+    for (int i = 0; i < 17; i++)
+    {
+        for (int j = 0; j < 17; j++)
+        {
+            if (isWaterLine(i, j) == 1)
+            {
+                gameBoardInfo[i][j] = 0;
+            }
+        }
+    }
+  
+    for (int i = 0; i < 17; i++)
+    {
+        for (int j = 0; j < 17; j++)
+        {
+          
+            
+            if(isFinalBomb(i,j)==1)
+            {
+                if(detectCharacter(i, j)==0)
+                gameBoardInfo[i][j] = BombZero;
+                for (int x = 1; x < MainCharacter.plusBombPowerItem; x++)
+                {
+
+                    if ((detectCharacter(i, j + x) == 0 && detectBlock(i, j + x) == 0 && gameBoardInfo[i][j + x] == 0)|| gameBoardInfo[i][j + x]==BlockWeak)
+                    {
+                        gameBoardInfo[i][j + x] = BombZero;
+                       
+                    }
+                    else
+                        break;
+                }
+                for (int x = 1; x < MainCharacter.plusBombPowerItem; x++)
+                {
+
+                    if ((detectCharacter(i, j - x) == 0 && detectBlock(i, j -x) == 0 && gameBoardInfo[i][j - x] == 0)||gameBoardInfo[i][j - x] == BlockWeak)
+                        gameBoardInfo[i][j -x] = BombZero;
+                    else
+                        break;
+                }
+                for (int x = 1; x < MainCharacter.plusBombPowerItem; x++)
+                {
+
+                    if ((detectCharacter(i+x, j ) == 0 && detectBlock(i+x, j ) == 0 && gameBoardInfo[i+x][j] == 0) || gameBoardInfo[i+x][j] == BlockWeak)
+                        gameBoardInfo[i+x][j] = BombZero;
+                    else
+                        break;
+                }
+                for (int x = 1; x < MainCharacter.plusBombPowerItem; x++)
+                {
+
+                    if ((detectCharacter(i-x, j) == 0 && detectBlock(i-x, j) == 0 && gameBoardInfo[i-x][j] == 0) || gameBoardInfo[i -x][j] == BlockWeak)
+                        gameBoardInfo[i-x][j] = BombZero;
+                    else
+                        break;
+                }
+                    
+                   
+                   
+                  
+                    
+
+                
+            }
+        }
+    }
+}
+
 void findChangingBomb(double current_time)
 {
     for (int i = 0; i < 17; i++)
@@ -161,12 +266,9 @@ void findChangingBomb(double current_time)
             {
 
 
-                if (current_time - TimeBoardInfo[i][j] >= 8)
-                {
-                    gameBoardInfo[i][j] = BombZero;
-                }
+               
 
-                if (current_time - TimeBoardInfo[i][j] >= 7 && current_time - TimeBoardInfo[i][j] < 8)
+                if (current_time - TimeBoardInfo[i][j] >= 7 )
                 {
                     gameBoardInfo[i][j] = BombOne2;
                 }
@@ -391,12 +493,14 @@ int main() {
     MainCharacter.bombNum = 0;
     MainCharacter.plusBombNumItem = 10;
     MainCharacter.plusBombPowerItem = 4;
+    MainCharacter.hp = 3;
     drawingTotalMap();
     while (1) {
         time_t current_time = time(NULL);
         double time = (double)current_time;
         //printf("%lf", time);
         findChangingBomb(time);
+        explosion();
         ProcessKeyInput();
         move_pattern_npc();
         move_nopattern_npc();
