@@ -4,7 +4,7 @@
 #include <Windows.h>
 #include <string.h>
 #include <time.h>
-
+//모든 객체에 할당 된 번호를 부여합니다.
 typedef enum ColorType {
     BLACK, //0
     darkBLUE, //1
@@ -56,9 +56,10 @@ enum Npc {
     NpcNOPattern = 501
 } NPC;
 
+
+//pc npc boss 의 구조체를 선언합니다. 
 typedef struct PCc {
     COORD pos;
-
 }PC_pos;
 typedef struct NPCc {
     COORD pos;
@@ -128,6 +129,8 @@ double TimeBoardInfo[GBOARD_HEIGHT + 2][GBOARD_WIDTH + 2];
 
 int stageNum = 1;
 
+
+//맵을 작성해줍니다.
 int gameBoardInfo[GBOARD_HEIGHT + 2][GBOARD_WIDTH + 2] = {
 {100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100},
 {100,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,100},
@@ -264,12 +267,10 @@ int gameBoardInfoTest[GBOARD_HEIGHT + 2][GBOARD_WIDTH + 2] = {
 {100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100},
 };
 
-
+//물풍선 관련 함수
 void firstTimeBoardInfo(double current_time, int x, int y)
 {
     TimeBoardInfo[y][x] = current_time;
-
-
 }
 void putBomb(int x, int y)
 {
@@ -302,7 +303,6 @@ int isBombNum(int x, int y)
     return 1;
 }
 int isMiddleBomb(int i, int j)
-
 {
     if (gameBoardInfo[i][j] >= BombFour && gameBoardInfo[i][j] <= BombOne2)
     {
@@ -319,6 +319,7 @@ int isFinalBomb(int i, int j)
     }
     else return 0;
 }
+//물줄기
 int isWaterLine(int i, int j)
 {
     if (gameBoardInfo[i][j] == BombZero)
@@ -326,6 +327,7 @@ int isWaterLine(int i, int j)
     else return 0;
 
 }
+//물풍선이 캐릭터를 만날때 
 int detectCharacter(int i, int j)
 {
     if (gameBoardInfo[i][j] == 400 || gameBoardInfo[i][j] == 401)
@@ -357,19 +359,17 @@ int detectCharacter(int i, int j)
     }
     return 0;
 }
+//블럭을 만났을 때 
 int detectBlock(int i, int j)
 {
     if (gameBoardInfo[i][j] == BlockWeak) {
-
-
         return 0;
     }
     if (gameBoardInfo[i][j] == BlockSolid)return 1;
 
-
-
     return 0;
 }
+//보스 약점을 공격 했을 때 
 int detectBossWeakBlock(int i, int j)
 {
     if (gameBoardInfo[i][j] == BossWeakBlock)
@@ -378,12 +378,14 @@ int detectBossWeakBlock(int i, int j)
     }
     return 0;
 }
+//랜덤 아이템 소환 
 int makeRandomItem()
 {
     int ran = rand() % 3;
     int itemN = 200 + ran;
     return itemN;
 }
+//폭발 했을 때 상호작용
 void explosion()
 {
     for (int i = 0; i < 17; i++)
@@ -443,9 +445,6 @@ void explosion()
 
                                     gameBoardInfo[i][j + x] = BombZero;
 
-
-
-
                             }
                             else
                                 break;
@@ -465,7 +464,6 @@ void explosion()
                         }
                         else
                         {
-
 
                             if ((detectCharacter(i, j - x) == 0 && (detectBlock(i, j - x) == 0) && gameBoardInfo[i][j - x] == 0) || gameBoardInfo[i][j - x] == BlockWeak)
                             {
@@ -586,7 +584,7 @@ void explosion()
     }
 }
 
-
+//물풍선의 모습을 시간마다 바꿔준다. 
 void findChangingBomb(double current_time)
 {
     for (int i = 0; i < 17; i++)
@@ -675,7 +673,7 @@ void RemoveCursor(void)
 
 }
 
-//한강섭
+// npc pc boss 관련 함수 
 int abs(int n) {
     if (n < 0) return n * -1;
     else return n;
@@ -1151,8 +1149,8 @@ int main() {
     settingUiInit();
     srand(time(NULL));
     RemoveCursor();
-    //drawingTotalMap(); // 이거 왜있는거죠? 주석처리 할게용 메뉴 만들때 오류남
-    Sleep(1000); // 얘도 왜있는거지 ㅇㄴ
+   
+    Sleep(1000); 
     pc = malloc(sizeof(PC_pos));
 
     while (1) {
