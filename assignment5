@@ -736,11 +736,11 @@ int DetectnpcCollision(int y, int x) {
 
 void move_pc(int y, int x) {
     int isDetect = DetectpcCollision(pc->pos.Y + y, pc->pos.X + x);
-    if (isDetect==1) return;
+    if (isDetect == 1) return;
     gameBoardInfo[pc->pos.Y][pc->pos.X] = 0;
     pc->pos.X += x;
     pc->pos.Y += y;
-    if(isDetect==2)gameBoardInfo[pc->pos.Y][pc->pos.X] = 402;
+    if (isDetect == 2)gameBoardInfo[pc->pos.Y][pc->pos.X] = 402;
     else gameBoardInfo[pc->pos.Y][pc->pos.X] = 400;
     drawingTotalMap();
     return;
@@ -1145,7 +1145,7 @@ int main() {
         MainCharacter.bombNum = 0;
         MainCharacter.plusBombNumItem = 3;     // 물폭탄 개수 초기화
         MainCharacter.plusBombPowerItem = 2;   // 화력 초기화
-        MainCharacter.hp = 100;
+        MainCharacter.hp = 3;
         bossCharacter.boss_hp = 10;
         // pc hp 초기화
         erazeWindow();
@@ -1786,7 +1786,7 @@ int nextStage() {
     setpc(1, 1);                           // pc 위치 초기화
     spawnnpc(4); //각각 3개의 npc를 소환하는 함수 만듬
     MainCharacter.bombNum = 0;
-    MainCharacter.hp = 100;
+    MainCharacter.hp = 3;
     MainCharacter.plusBombNumItem = 3;     // 물폭탄 개수 초기화
     MainCharacter.plusBombPowerItem = 2;   // 화력 초기화
     drawingTotalMap();
