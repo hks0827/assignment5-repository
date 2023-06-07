@@ -12,7 +12,7 @@ typedef enum ColorType {
     darkSkyBlue,    //3
     DarkRed,     //4
     DarkPurple,   //5
-    DarkYellow,   //6s
+    DarkYellow,   //6
     GRAY,      //7
     DarkGray,   //8
     BLUE,      //9
@@ -85,8 +85,6 @@ mainCharacterInfo MainCharacter;
 #define GBOARD_ORIGIN_Y 2
 #define STATUS_MENU_WINDOW_X 40
 #define STATUS_MENU_WINDOW_Y 2
-<<<<<<< HEAD
-=======
 
 PC_pos* pc;
 NPC_pos_pattern* npc_pattern;
@@ -107,19 +105,7 @@ double TimeBoardInfo[GBOARD_HEIGHT + 2][GBOARD_WIDTH + 2];
 //플레이어가 물풍선닿았을 때 색깔 바뀌는
 
 int stageNum = 1;
->>>>>>> bomb
 
-int cnt_npc_pattern;
-int cnt_npc_nopattern;
-void drawingTotalMap();
-void printHeroHp();
-void printGameBoard();
-void drawBombNumUI();
-void drawPowerUI();
-void drawNpcHP();
-void settingUiInit();
-double TimeBoardInfo[GBOARD_HEIGHT + 2][GBOARD_WIDTH + 2];
-//플레이어가 물풍선닿았을 때 색깔 바뀌는
 int gameBoardInfo[GBOARD_HEIGHT + 2][GBOARD_WIDTH + 2] = {
     {100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100},
     {100,0  ,0  ,100,101,100,101,100,101,100,101,100,101,100,0  ,0  ,100},
@@ -181,87 +167,6 @@ int gameBoardInfo2[GBOARD_HEIGHT + 2][GBOARD_WIDTH + 2] = {
 int gameBoardInfo3[GBOARD_HEIGHT + 2][GBOARD_WIDTH + 2] = {
     {100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100},
     {100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100},
-<<<<<<< HEAD
-    {100,101,101,100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100,101,101,100},
-    {100,101,100,0  ,100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100,0  ,100,101,100},
-    {100,101,101,100,100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100,100,101,101,100},
-    {100,0  ,0  ,101,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,101,0  ,0  ,100},
-    {100,0  ,0  ,101,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,101,0  ,0  ,100},
-    {100,0  ,0  ,101,100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100,101,0  ,0  ,100},
-    {100,0  ,0  ,101,100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100,101,0  ,0  ,100},
-    {100,0  ,0  ,101,100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100,101,0  ,0  ,100},
-    {100,0  ,0  ,101,100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100,101,0  ,0  ,100},
-    {100,0  ,0  ,101,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,101,0  ,0  ,100},
-    {100,0  ,0  ,101,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,101,0  ,0  ,100},
-    {100,101,101,100,100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100,101,101,100},
-    {100,101,100,0  ,100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100,0  ,100,101,100},
-    {100,101,0  ,100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100,0  ,101,100},
-    {100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100},
-};
-
-int gameBoardInfo1[GBOARD_HEIGHT + 2][GBOARD_WIDTH + 2] = {
-    {100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100},
-    {100,0  ,0  ,100,101,100,101,100,101,100,101,100,101,100,0  ,0  ,100},
-    {100,0  ,0  ,0  ,101,101,101,101,101,101,101,101,101,0  ,0  ,0  ,100},
-    {100,100,0  ,100,101,100,101,100,101,100,101,100,101,100,0  ,100,100},
-    {100,101,101,101,101,101,101,101,101,101,101,101,101,101,101,101,100},
-    {100,100,101,100,101,100,101,100,101,100,101,100,101,100,101,100,100},
-    {100,101,101,101,101,101,101,101,101,101,101,101,101,101,101,101,100},
-    {100,100,101,100,101,100,101,100,101,100,101,100,101,100,101,100,100},
-    {100,101,101,101,101,101,101,101,101,101,101,101,101,101,101,101,100},
-    {100,100,101,100,101,100,101,100,101,100,101,100,101,100,101,100,100},
-    {100,101,101,101,101,101,101,101,101,101,101,101,101,101,101,101,100},
-    {100,100,101,100,101,100,101,100,101,100,101,100,101,100,101,100,100},
-    {100,101,101,101,101,101,101,101,101,101,101,101,101,101,101,101,100},
-    {100,101,0  ,100,101,100,101,100,101,100,101,100,101,100,0  ,100,100},
-    {100,0  ,0  ,0  ,101,101,101,101,101,101,101,101,101,0  ,0  ,0  ,100},
-    {100,0  ,0  ,100,101,100,101,100,101,100,101,100,101,100,0  ,0  ,100},
-    {100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100},
-};
-int gameBoardInfo2[GBOARD_HEIGHT + 2][GBOARD_WIDTH + 2] = {
-    {100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100},
-    {100,0  ,0  ,101,101,0  ,0  ,0  ,101,0  ,0  ,0  ,101,101,101,101,100},
-    {100,0  ,100,101,0  ,100,100,100,0  ,100,100,100,0  ,101,100,101,100},
-    {100,0  ,101,0  ,100,0  ,0  ,0  ,101,0  ,0  ,0  ,100,0  ,101,101,100},
-    {100,101,0  ,100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100,0  ,101,100},
-    {100,101,0  ,100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100,0  ,101,100},
-    {100,101,0  ,100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100,0  ,101,100},
-    {100,101,0  ,100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100,0  ,101,100},
-    {100,101,0  ,100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100,0  ,101,100},
-    {100,101,101,0  ,100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100,0  ,101,0  ,100},
-    {100,101,101,101,0  ,100,0  ,0  ,0  ,0  ,0  ,100,0  ,101,101,101,100},
-    {100,101,101,101,101,0  ,100,0  ,0  ,0  ,100,0  ,101,101,101,101,100},
-    {100,101,101,101,101,101,0  ,100,100,100,0  ,101,101,101,101,101,100},
-    {100,101,101,0  ,101,101,101,0  ,0  ,0  ,101,101,101,0  ,101,101,100},
-    {100,101,100,0  ,101,101,101,101,101,101,101,101,101,0  ,100,101,100},
-    {100,101,0  ,0  ,101,101,101,0  ,0  ,0  ,101,101,101,0  ,0  ,101,100},
-    {100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100},
-};
-int gameBoardInfo3[GBOARD_HEIGHT + 2][GBOARD_WIDTH + 2] = {
-    {100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100},
-    {100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100},
-    {100,0  ,100,100,100,100,100,100,100,100,100,100,0  ,101,100,101,100},
-    {100,0  ,0  ,0  ,100,0  ,101,0  ,100,0  ,100,0  ,0  ,100,0  ,101,100},
-    {100,0  ,100,0  ,100,0  ,100,101,100,0  ,101,0  ,100,101,101,0  ,100},
-    {100,0  ,0  ,0  ,100,101,100,101,100,0  ,100,100,0  ,100,0  ,101,100},
-    {100,0  ,100,100,100,0  ,0  ,101,100,100,100,0  ,100,101,101,0  ,100},
-    {100,0  ,0  ,0  ,100,101,100,101,0  ,0  ,101,0  ,0  ,100,0  ,101,100},
-    {100,101,100,0  ,0  ,0  ,100,0  ,100,100,0  ,100,0  ,101,100,101,100},
-    {100,100,100,0  ,100,100,100,101,101,0  ,101,100,100,0  ,100,0  ,100},
-    {100,0  ,100,0  ,0  ,0  ,100,0  ,0  ,100,0  ,0  ,100,0  ,0  ,100,100},
-    {100,0  ,0  ,0  ,100,0  ,101,101,100,0  ,100,100,100,0  ,0  ,100,100},
-    {100,0  ,100,0  ,100,100,0  ,0  ,101,0  ,0  ,101,0  ,0  ,100,100,100},
-    {100,100,100,0  ,100,101,100,100,0  ,0  ,100,100,100,0  ,0  ,100,100},
-    {100,100,101,0  ,101,101,0  ,0  ,100,100,0  ,0  ,101,0  ,100,100,100},
-    {100,0  ,101,0  ,100,0  ,100,101,0  ,101,0  ,100,0  ,0  ,0  ,100,100},
-    {100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100},
-};
-int gameBoardInfo4[GBOARD_HEIGHT + 2][GBOARD_WIDTH + 2] = {
-    {100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100},
-    {100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100},
-    {100,101,101,100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100,101,101,100},
-    {100,101,100,0  ,100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100,0  ,100,101,100},
-=======
     {100,0  ,100,100,100,100,100,100,100,100,100,100,0  ,101,100,101,100},
     {100,0  ,0  ,0  ,100,0  ,101,0  ,100,0  ,100,0  ,0  ,100,0  ,0  ,100},
     {100,0  ,100,0  ,100,0  ,100,101,100,0  ,201,0  ,100,101,101,0  ,100},
@@ -283,7 +188,6 @@ int gameBoardInfo4[GBOARD_HEIGHT + 2][GBOARD_WIDTH + 2] = {
     {100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100},
     {100,101,101,100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100,101,101,100},
     {100,101,100,100,100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100,100,100,101,100},
->>>>>>> bomb
     {100,101,101,100,100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100,100,101,101,100},
     {100,0  ,0  ,101,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,101,0  ,0  ,100},
     {100,0  ,0  ,101,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,101,0  ,0  ,100},
@@ -293,10 +197,6 @@ int gameBoardInfo4[GBOARD_HEIGHT + 2][GBOARD_WIDTH + 2] = {
     {100,0  ,0  ,101,100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100,101,0  ,0  ,100},
     {100,0  ,0  ,101,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,101,0  ,0  ,100},
     {100,0  ,0  ,101,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,101,0  ,0  ,100},
-<<<<<<< HEAD
-    {100,101,101,100,100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100,101,101,100},
-    {100,101,100,0  ,100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100,0  ,100,101,100},
-=======
     {100,101,101,100,100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100,100,101,101,100},
     {100,101,100,100,100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100,100,100,101,100},
     {100,101,0  ,100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100,0  ,101,100},
@@ -319,7 +219,6 @@ int gameBoardInfoTest[GBOARD_HEIGHT + 2][GBOARD_WIDTH + 2] = {
     {100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100},
     {100,101,101,100,100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100,100,101,101,100},
     {100,101,100,100,100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100,100,100,101,100},
->>>>>>> bomb
     {100,101,0  ,100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100,0  ,101,100},
     {100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100},
 };
@@ -390,28 +289,13 @@ int  detectCharacter(int i, int j)
     if (gameBoardInfo[i][j] == 400 || gameBoardInfo[i][j] == 401)
     {
         MainCharacter.hp--;
-<<<<<<< HEAD
-        printf("캐릭터hp:%d", MainCharacter.hp);
         gameBoardInfo[i][j] = 401;
-
-=======
-        gameBoardInfo[i][j] = 401;
->>>>>>> bomb
         return 1;
     }
     if (gameBoardInfo[i][j] == 500 || gameBoardInfo[i][j] == 501)
     {
         if (gameBoardInfo[i][j] == 500)
         {
-<<<<<<< HEAD
-            cnt_npc_pattern--;
-        }
-        if (gameBoardInfo[i][j] == 501)
-        {
-            cnt_npc_nopattern--;
-        }
-        gameBoardInfo[i][j] = 0;
-=======
             for (int k = 0; k < cnt_npc_pattern; k++) {
                 if (npc_pattern[k].pos.X == j && npc_pattern[k].pos.Y == i && npc_pattern[k].live) {
                     npc_pattern[k].live = FALSE;//npc 죽임
@@ -428,7 +312,6 @@ int  detectCharacter(int i, int j)
             }
             gameBoardInfo[i][j] = 0; //npc지움
         }
->>>>>>> bomb
     }
     return 0;
 }
@@ -477,108 +360,133 @@ void explosion()
                     gameBoardInfo[i][j] = BombZero;
                 for (int x = 1; x < MainCharacter.plusBombPowerItem; x++)
                 {
-
-                    if ((detectCharacter(i, j + x) == 0 && (detectBlock(i, j + x) == 0) && gameBoardInfo[i][j + x] == 0) || gameBoardInfo[i][j + x] == BlockWeak)
-                    {
-                        if (gameBoardInfo[i][j + x] == BlockWeak)
-                        {
-                            int ran = rand() % 3;
-                            if (ran == 0)
-                            {
-                                gameBoardInfo[i][j + x] = makeRandomItem();
-                            }
-                        }
-                        if (gameBoardInfo[i][j + x]<ItemHeart || gameBoardInfo[i][j + x]>ItemPower)
-
-                            gameBoardInfo[i][j + x] = BombZero;
-
-<<<<<<< HEAD
-
-=======
-                       
->>>>>>> bomb
-
-
-                    }
+                    if(gameBoardInfo[i][j+x]>=ItemHeart&& gameBoardInfo[i][j + x] <= ItemPower)
+                        gameBoardInfo[i][j + x] = BombZero;
                     else
-                        break;
+                    {
+                        if ((detectCharacter(i, j + x) == 0 && (detectBlock(i, j + x) == 0) && gameBoardInfo[i][j + x] == 0) || gameBoardInfo[i][j + x] == BlockWeak)
+                        {
+                            if (gameBoardInfo[i][j + x] == BlockWeak)
+                            {
+                                int ran = rand() % 3;
+                                if (ran == 0)
+                                {
+                                    gameBoardInfo[i][j + x] = makeRandomItem();
+
+                                }
+                                else
+                                {
+                                    gameBoardInfo[i][j + x] = BombZero;
+
+                                }
+                                break;
+
+                            }
+                            if (gameBoardInfo[i][j + x]<ItemHeart || gameBoardInfo[i][j + x]>ItemPower)
+
+                                gameBoardInfo[i][j + x] = BombZero;
+
+
+
+
+                        }
+                        else
+                            break;
+                    }
                 }
                 for (int x = 1; x < MainCharacter.plusBombPowerItem; x++)
                 {
-
-                    if ((detectCharacter(i, j - x) == 0 && (detectBlock(i, j - x) == 0) && gameBoardInfo[i][j - x] == 0) || gameBoardInfo[i][j - x] == BlockWeak)
-                    {
-                        if (gameBoardInfo[i][j - x] == BlockWeak)
-                        {
-                            int ran = rand() % 3;
-                            if (ran == 0)
-                            {
-                                gameBoardInfo[i][j - x] = makeRandomItem();
-                            }
-                        }
-                        if (gameBoardInfo[i][j - x]<ItemHeart || gameBoardInfo[i][j - x]>ItemPower)
-                            gameBoardInfo[i][j - x] = BombZero;
-<<<<<<< HEAD
-
-=======
-                    
->>>>>>> bomb
-                    }
+                    if (gameBoardInfo[i][j -x] >= ItemHeart && gameBoardInfo[i][j -x] <= ItemPower)
+                        gameBoardInfo[i][j - x] = BombZero;
                     else
-                        break;
+                    {
+                        if ((detectCharacter(i, j - x) == 0 && (detectBlock(i, j - x) == 0) && gameBoardInfo[i][j - x] == 0) || gameBoardInfo[i][j - x] == BlockWeak)
+                        {
+                            if (gameBoardInfo[i][j - x] == BlockWeak)
+                            {
+                                int ran = rand() % 3;
+                                if (ran == 0)
+                                {
+                                    gameBoardInfo[i][j - x] = makeRandomItem();
+
+                                }
+                                else
+                                {
+                                    gameBoardInfo[i][j - x] = BombZero;
+
+                                }
+                                break;
+                            }
+                            if (gameBoardInfo[i][j - x]<ItemHeart || gameBoardInfo[i][j - x]>ItemPower)
+                                gameBoardInfo[i][j - x] = BombZero;
+
+                        }
+                        else
+                            break;
+                    }
                 }
                 for (int x = 1; x < MainCharacter.plusBombPowerItem; x++)
                 {
-
-                    if ((detectCharacter(i + x, j) == 0 && (detectBlock(i + x, j) == 0) && gameBoardInfo[i + x][j] == 0) || gameBoardInfo[i + x][j] == BlockWeak)
-                    {
-                        if (gameBoardInfo[i + x][j] == BlockWeak)
-                        {
-                            int ran = rand() % 3;
-                            if (ran == 0)
-                            {
-                                gameBoardInfo[i + x][j] = makeRandomItem();
-                            }
-                        }
-                        if (gameBoardInfo[i + x][j]<ItemHeart || gameBoardInfo[i + x][j]>ItemPower)
-                            gameBoardInfo[i + x][j] = BombZero;
-<<<<<<< HEAD
-
-=======
-                      
->>>>>>> bomb
-                    }
+                    if (gameBoardInfo[i+x][j] >= ItemHeart && gameBoardInfo[i+x][j] <= ItemPower)
+                        gameBoardInfo[i+x][j] = BombZero;
                     else
-                        break;
+                    {
+                        if ((detectCharacter(i + x, j) == 0 && (detectBlock(i + x, j) == 0) && gameBoardInfo[i + x][j] == 0) || gameBoardInfo[i + x][j] == BlockWeak)
+                        {
+                            if (gameBoardInfo[i + x][j] == BlockWeak)
+                            {
+                                int ran = rand() % 3;
+                                if (ran == 0)
+                                {
+                                    gameBoardInfo[i + x][j] = makeRandomItem();
+
+                                }
+                                else
+                                {
+                                    gameBoardInfo[i + x][j] = BombZero;
+
+                                }
+                                break;
+                            }
+                            if (gameBoardInfo[i + x][j]<ItemHeart || gameBoardInfo[i + x][j]>ItemPower)
+                                gameBoardInfo[i + x][j] = BombZero;
+
+                        }
+                        else
+                            break;
+                    }
                 }
                 for (int x = 1; x < MainCharacter.plusBombPowerItem; x++)
                 {
-
-                    if ((detectCharacter(i - x, j) == 0 && (detectBlock(i - x, j) == 0) && gameBoardInfo[i - x][j] == 0) || gameBoardInfo[i - x][j] == BlockWeak)
-                    {
-                        if (gameBoardInfo[i - x][j] == BlockWeak)
-                        {
-                            int ran = rand() % 3;
-                            if (ran == 0)
-                            {
-                                gameBoardInfo[i - x][j] = makeRandomItem();
-                            }
-                        }
-                        if (gameBoardInfo[i - x][j]<ItemHeart || gameBoardInfo[i - x][j]>ItemPower)
-                            gameBoardInfo[i - x][j] = BombZero;
-<<<<<<< HEAD
-
-=======
-                       
->>>>>>> bomb
-                    }
+                    if (gameBoardInfo[i-x][j] >= ItemHeart && gameBoardInfo[i-x][j + x] <= ItemPower)
+                        gameBoardInfo[i-x][j] = BombZero;
                     else
-                        break;
+                    {
+                        if ((detectCharacter(i - x, j) == 0 && (detectBlock(i - x, j) == 0) && gameBoardInfo[i - x][j] == 0) || gameBoardInfo[i - x][j] == BlockWeak)
+                        {
+                            if (gameBoardInfo[i - x][j] == BlockWeak)
+                            {
+                                int ran = rand() % 3;
+                                if (ran == 0)
+                                {
+                                    gameBoardInfo[i - x][j] = makeRandomItem();
+
+                                }
+                                else
+                                {
+                                    gameBoardInfo[i - x][j] = BombZero;
+                                }
+                                break;
+                            }
+                            if (gameBoardInfo[i - x][j]<ItemHeart || gameBoardInfo[i - x][j]>ItemPower)
+                                gameBoardInfo[i - x][j] = BombZero;
+
+                        }
+                        else
+                            break;
+                    }
                 }
-<<<<<<< HEAD
-=======
                 drawingTotalMap();
->>>>>>> bomb
 
 
 
@@ -590,10 +498,7 @@ void explosion()
         }
     }
 }
-<<<<<<< HEAD
-=======
 
->>>>>>> bomb
 void findChangingBomb(double current_time)
 {
     for (int i = 0; i < 17; i++)
@@ -649,6 +554,7 @@ void findChangingBomb(double current_time)
         }
     }
 }
+
 void SetCurrentCursorPos(int x, int y)
 {
     COORD position = { x, y };
@@ -677,16 +583,7 @@ void RemoveCursor(void)
 
 }
 
-<<<<<<< HEAD
-
-
-PC_pos* pc;
-NPC_pos_pattern* npc_pattern;
-NPC_pos_nopattern* npc_nopattern;
-
-=======
 //한강섭
->>>>>>> bomb
 int abs(int n) {
     if (n < 0) return n * -1;
     else return n;
@@ -738,17 +635,23 @@ int DetectpcCollision(int y, int x) {
         return 0; //pc를 다음위치로 움직인다.
     }
     else if (gameBoardInfo[y][x] == 200) {
-        MainCharacter.hp += 1;
+        if (MainCharacter.hp < 6) {
+            MainCharacter.hp += 1;
+        }
         gameBoardInfo[y][x] = 0;
         return 0;
     }
     else if (gameBoardInfo[y][x] == 201) {
-        MainCharacter.plusBombNumItem += 1;
+        if (MainCharacter.plusBombNumItem < 10) {
+            MainCharacter.plusBombNumItem += 1;
+        }
         gameBoardInfo[y][x] = 0;
         return 0;
     }
     else if (gameBoardInfo[y][x] == 202) {
-        MainCharacter.plusBombPowerItem += 1;
+        if (MainCharacter.plusBombPowerItem < 11) {
+            MainCharacter.plusBombPowerItem += 1;
+        }
         gameBoardInfo[y][x] = 0;
         return 0;
     }
@@ -835,8 +738,6 @@ void move_pattern_npc() {
     }
     return;
 }
-<<<<<<< HEAD
-=======
 void move_nopattern_npc() {
     for (int i = 0; i < cnt_npc_nopattern; i++)
     {
@@ -958,7 +859,6 @@ void spawnbomb(int n) {//n개의 물풍선을 랜덤한 장소에 소환
 
 
 
->>>>>>> bomb
 int before_key;
 void ProcessKeyInput() {
     int key;
@@ -1004,40 +904,20 @@ void ProcessKeyInput() {
     return;
 }
 int main() {
-<<<<<<< HEAD
-    settingUiInit(); // 추가한다.
-=======
     int flag;
 
     settingUiInit();
->>>>>>> bomb
     srand(time(NULL));
     RemoveCursor();
     drawingTotalMap();
     Sleep(1000);
     pc = malloc(sizeof(PC_pos));
-<<<<<<< HEAD
-    setpc(1, 1); // 이거 바꾼다!
-    cnt_npc_pattern = 2;
-    cnt_npc_nopattern = 2;
-    npc_pattern = malloc(sizeof(NPC_pos_pattern) * cnt_npc_pattern);
-    npc_nopattern = malloc(sizeof(NPC_pos_nopattern) * cnt_npc_nopattern);
-    setnpc_pattern(0, 15, 15);        // 이거 바꾼다!
-    setnpc_pattern(1, 15, 14);        // 이거 바꾼다!
-    setnpc_nopattern(0, 14, 15);      // 이거 바꾼다!
-    setnpc_nopattern(1, 14, 14);      // 이거 바꾼다!
-    MainCharacter.bombNum = 0;
-    MainCharacter.plusBombNumItem = 10;
-    MainCharacter.plusBombPowerItem = 4;
-    MainCharacter.hp = 3;
-=======
     setpc(1, 1);                           // pc 위치 초기화
     spawnnpc(2); //각각 3개의 npc를 소환하는 함수 만듬
     MainCharacter.bombNum = 0;
     MainCharacter.plusBombNumItem = 3;     // 물폭탄 개수 초기화
     MainCharacter.plusBombPowerItem = 2;   // 화력 초기화
     MainCharacter.hp = 3;                  // pc hp 초기화
->>>>>>> bomb
     drawingTotalMap();
     while (1) {
         //printf("%lf", time);
@@ -1062,10 +942,6 @@ int main() {
 }
 
 void settingUiInit() {
-}
-
-void settingUiInit() {
-    SetConsoleTitle("water bomb");
 }
 
 void drawingTotalMap() {
@@ -1216,40 +1092,31 @@ void printGameBoard() {
 
 void printHeroHp() {
     SetCurrentCursorPos(STATUS_MENU_WINDOW_X, STATUS_MENU_WINDOW_Y);
-    if (MainCharacter.hp == 3) {
-<<<<<<< HEAD
-       printf("플레이어 HP : ■■■■■■");
-=======
+    if (MainCharacter.hp == 6) {
         printf("플레이어 HP : ■■■■■■");
->>>>>>> bomb
     }
-    else if (MainCharacter.hp == 2) {
+    else if (MainCharacter.hp == 5) {
+        printf("플레이어 HP : ■■■■■□");
+    }
+    else if (MainCharacter.hp == 4) {
         printf("플레이어 HP : ■■■■□□");
     }
-    else if (MainCharacter.hp == 1) {
+    else if (MainCharacter.hp == 3) {
+        printf("플레이어 HP : ■■■□□□");
+    }
+    else if (MainCharacter.hp == 2) {
         printf("플레이어 HP : ■■□□□□");
     }
+    else if (MainCharacter.hp == 1) {
+        printf("플레이어 HP : ■□□□□□");
+    }
     else {
-<<<<<<< HEAD
-        printf("플레이어 HP : ■■■■■■");
-=======
         printf("플레이어 HP : □□□□□□");
->>>>>>> bomb
     }
 }
 
 void drawBombNumUI() {
     SetCurrentCursorPos(STATUS_MENU_WINDOW_X, STATUS_MENU_WINDOW_Y + 2);
-<<<<<<< HEAD
-    if (1) {
-        printf("최대 물폭탄 개수 : ■■■■■■■■■■");
-    }
-    else if (1) {
-        printf("최대 물폭탄 개수 : ■■■■■■■■■■");
-    }
-    else if (1) {
-        printf("최대 물폭탄 개수 : ■■■■■■■■■■");
-=======
     if (MainCharacter.plusBombNumItem == 1) {
         printf("최대 물폭탄 개수 : ■□□□□□□□□□");
     }
@@ -1276,7 +1143,6 @@ void drawBombNumUI() {
     }
     else if (MainCharacter.plusBombNumItem == 9) {
         printf("최대 물폭탄 개수 : ■■■■■■■■■□");
->>>>>>> bomb
     }
     else {
         printf("최대 물폭탄 개수 : ■■■■■■■■■■");
@@ -1285,19 +1151,6 @@ void drawBombNumUI() {
 
 void drawPowerUI() {
     SetCurrentCursorPos(STATUS_MENU_WINDOW_X, STATUS_MENU_WINDOW_Y + 4);
-<<<<<<< HEAD
-    if (1) {
-        printf("물폭탄 화력 : ■■■■□□");
-    }
-    else if (1) {
-        printf("물폭탄 화력 : ■■■■□□");
-    }
-    else if (1) {
-        printf("물폭탄 화력 : ■■■■□□");
-    }
-    else {
-        printf("물폭탄 화력 : ■■■■□□");
-=======
     if (MainCharacter.plusBombPowerItem == 2) {
         printf("물폭탄 화력 : ■□□□□□□□□□");
     }
@@ -1327,7 +1180,6 @@ void drawPowerUI() {
     }
     else {
         printf("물폭탄 화력 : ■■■■■■■■■■");
->>>>>>> bomb
     }
 }
 
@@ -1346,8 +1198,6 @@ void drawNpcHP() {
         printf("보스 HP : ■■■■■■■■■■■■■■");
     }
 }
-<<<<<<< HEAD
-=======
 int nextStage() {
     int i, j;
 
@@ -1387,4 +1237,3 @@ int nextStage() {
 
     return 1;
 }
->>>>>>> bomb
