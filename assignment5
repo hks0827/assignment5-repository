@@ -48,7 +48,8 @@ enum Bomb {
 } BOMB;
 enum Pc {
     PcNormal = 400,
-    PcOnBomb = 401
+    PcOnBomb = 401,
+    PcOnHit = 402
 } PC;
 enum Npc {
     NpcPattern = 500,
@@ -212,13 +213,13 @@ int gameBoardInfo4[GBOARD_HEIGHT + 2][GBOARD_WIDTH + 2] = {
     {100,101,101,100,100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100,100,101,101,100},
     {100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100},
     {100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100},
-    {100,0  ,0  ,101,0  ,100,100,100,100,100,100,100,0  ,101,0  ,0  ,100},
-    {100,0  ,0  ,101,0  ,100,100,100,100,100,100,100,0  ,101,0  ,0  ,100},
-    {100,0  ,0  ,101,0  ,100,100,100,100,100,100,100,0  ,101,0  ,0  ,100},
-    {100,0  ,0  ,101,0  ,100,100,100,100,100,100,100,0  ,101,0  ,0  ,100},
+    {100,0  ,0  ,100,0  ,100,100,100,100,100,100,100,0  ,100,0  ,0  ,100},
+    {100,0  ,0  ,100,0  ,100,100,100,100,100,100,100,0  ,100,0  ,0  ,100},
+    {100,0  ,0  ,100,0  ,100,100,100,100,100,100,100,0  ,100,0  ,0  ,100},
+    {100,0  ,0  ,100,0  ,100,100,100,100,100,100,100,0  ,100,0  ,0  ,100},
     {100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100},
     {100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100},
-    {100,101,101,100,100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100,100,101,101,100},
+    {100,101,100,100,100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100,100,100,101,100},
     {100,101,100,100,100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100,100,100,101,100},
     {100,101,0  ,100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100,0  ,101,100},
     {100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100},
@@ -514,7 +515,7 @@ void explosion()
                 }
                 for (int x = 1; x < MainCharacter.plusBombPowerItem; x++)
                 {
-                    if (gameBoardInfo[i - x][j] >= ItemHeart && gameBoardInfo[i - x][j + x] <= ItemPower)
+                    if (gameBoardInfo[i - x][j] >= ItemHeart && gameBoardInfo[i - x][j] <= ItemPower)
                         gameBoardInfo[i - x][j] = BombZero;
                     else
                     {
@@ -702,7 +703,7 @@ int DetectpcCollision(int y, int x) {
             }
             gameBoardInfo[y][x] = 0; //지운다.
         }
-        return 0; //pc를 다음위치로 움직인다.
+        return 2; //pc를 다음위치로 움직인다. 
     }
     else if (gameBoardInfo[y][x] == 200) {
         if (MainCharacter.hp < 6) {
@@ -734,11 +735,13 @@ int DetectnpcCollision(int y, int x) {
 }
 
 void move_pc(int y, int x) {
-    if (DetectpcCollision(pc->pos.Y + y, pc->pos.X + x)) return;
+    int isDetect = DetectpcCollision(pc->pos.Y + y, pc->pos.X + x);
+    if (isDetect==1) return;
     gameBoardInfo[pc->pos.Y][pc->pos.X] = 0;
     pc->pos.X += x;
     pc->pos.Y += y;
-    gameBoardInfo[pc->pos.Y][pc->pos.X] = 400;
+    if(isDetect==2)gameBoardInfo[pc->pos.Y][pc->pos.X] = 402;
+    else gameBoardInfo[pc->pos.Y][pc->pos.X] = 400;
     drawingTotalMap();
     return;
 }
@@ -797,6 +800,7 @@ void move_pattern_npc() {
             MainCharacter.hp--;
             gameBoardInfo[npc_pattern[i].pos.Y][npc_pattern[i].pos.X] = 0;
             npc_pattern[i].live = FALSE;
+            gameBoardInfo[pc->pos.Y][pc->pos.X] = 402;
         }
         else { //움직일때
             gameBoardInfo[npc_pattern[i].pos.Y][npc_pattern[i].pos.X] = 0;
@@ -863,6 +867,8 @@ void move_nopattern_npc() {
             MainCharacter.hp--;
             gameBoardInfo[npc_nopattern[i].pos.Y][npc_nopattern[i].pos.X] = 0;
             npc_nopattern[i].live = FALSE;
+            gameBoardInfo[pc->pos.Y][pc->pos.X] = 402;
+
         }
         else { //움직일때
             gameBoardInfo[npc_nopattern[i].pos.Y][npc_nopattern[i].pos.X] = 0;
@@ -1153,7 +1159,11 @@ int main() {
             ProcessKeyInput();
             /* 스테이지 ㄱㄱ
             */
-            if (MainCharacter.hp < 1) break; //npc가 모두 죽으면 끝내준다. or pc 죽으면 끝내준다.
+            if (MainCharacter.hp < 1)
+            {
+                flag = 1;
+                break; //npc가 모두 죽으면 끝내준다. or pc 죽으면 끝내준다.
+            }
             if (flag == 1) { //보스 맵 아닐때 
                 if (npc_alldiecheck()) {
                     free(npc_pattern);
@@ -1571,7 +1581,11 @@ void printGameBoard() {
                     SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), BLUE);
                     printf("♀");
                     SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), WHITE);
-
+                    break;
+                case PcOnHit:
+                    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), RED);
+                    printf("♀");
+                    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), WHITE);
                     break;
                 default:
                     break;
