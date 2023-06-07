@@ -25,14 +25,10 @@ typedef enum ColorType {
 }COLOR;
 enum Block {
     BlockSolid = 100,
-<<<<<<< HEAD
-    BlockWeak = 101
-=======
     BlockWeak = 101,
+    BossWeakBlock = 130,
+    BossWeakBlockAttacked = 131
 
-    BossWeakBlock = 130                                          //bossWeakBlock을 130으로 설정함.
-
->>>>>>> npc_pc_boss
 }BLOCK;
 enum Item {
     ItemHeart = 200,
@@ -79,8 +75,6 @@ typedef struct mainCharacterInfo {
 
 }mainCharacterInfo;
 mainCharacterInfo MainCharacter;
-<<<<<<< HEAD
-=======
 typedef struct bossCharacterInfo
 {
     int phase;
@@ -90,7 +84,6 @@ typedef struct bossCharacterInfo
 bossCharacterInfo bossCharacter;
 
 
->>>>>>> npc_pc_boss
 
 #define KUP 72
 #define KDOWN 80
@@ -104,16 +97,18 @@ bossCharacterInfo bossCharacter;
 #define GBOARD_ORIGIN_Y 2
 #define STATUS_MENU_WINDOW_X 40
 #define STATUS_MENU_WINDOW_Y 2
+#define BOSS_START_X 5
+#define BOSS_START_Y 7
 
 PC_pos* pc;
 NPC_pos_pattern* npc_pattern;
 NPC_pos_nopattern* npc_nopattern;
-<<<<<<< HEAD
-=======
 int npcspeed = 8;
->>>>>>> npc_pc_boss
 int cnt_npc_pattern;
 int cnt_npc_nopattern;
+int curMenu = 0;
+int whatClick = 0;
+int wantExit = 0;
 void drawingTotalMap();
 void printHeroHp();
 void printGameBoard();
@@ -122,7 +117,10 @@ void drawPowerUI();
 void drawNpcHP();
 void settingUiInit();
 int nextStage();
-
+void drawingGameMenu();
+void menuUp();
+void menuDown();
+void erazeWindow();
 
 double TimeBoardInfo[GBOARD_HEIGHT + 2][GBOARD_WIDTH + 2];
 //플레이어가 물풍선닿았을 때 색깔 바뀌는
@@ -131,23 +129,106 @@ int stageNum = 1;
 
 int gameBoardInfo[GBOARD_HEIGHT + 2][GBOARD_WIDTH + 2] = {
     {100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100},
+    {100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100},
+    {100,0  ,100,100,100,100,100,100,100,100,100,100,0  ,101,100,0  ,100},
+    {100,0  ,0  ,0  ,100,0  ,0  ,0  ,100,0  ,100,0  ,0  ,100,0  ,0  ,100},
+    {100,0  ,100,0  ,100,0  ,100,201,100,0  ,0  ,0  ,100,101,0  ,0  ,100},
+    {100,0  ,0  ,0  ,100,0  ,100,0  ,100,0  ,100,100,100,100,0  ,0  ,100},
+    {100,0  ,100,100,100,0  ,0  ,0  ,100,100,100,0  ,100,101,0  ,0  ,100},
+    {100,0  ,0  ,0  ,100,0  ,100,0  ,0  ,0  ,0  ,0  ,0  ,100,0  ,0  ,100},
+    {100,101,100,0  ,0  ,0  ,100,0  ,100,100,0  ,100,0  ,0  ,100,0  ,100},
+    {100,100,100,0  ,100,100,100,0  ,202,0  ,0  ,100,100,0  ,100,0  ,100},
+    {100,0  ,100,0  ,0  ,0  ,100,0  ,0  ,100,0  ,0  ,100,0  ,0  ,100,100},
+    {100,0  ,0  ,0  ,100,0  ,0  ,0  ,100,0  ,100,100,100,0  ,0  ,100,100},
+    {100,0  ,100,0  ,100,100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100,100,100},
+    {100,100,100,0  ,100,101,100,100,101,101,100,100,100,0  ,0  ,100,100},
+    {100,100,101,0  ,0  ,0  ,0  ,0  ,100,100,0  ,0  ,0  ,0  ,100,100,100},
+    {100,0  ,0  ,0  ,100,0  ,100,101,0  ,200,0  ,100,0  ,0  ,0  ,100,100},
+    {100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100},
+};
+
+int gameBoardInfo1[GBOARD_HEIGHT + 2][GBOARD_WIDTH + 2] = {
+    {100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100},
+    {100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100},
+    {100,0  ,100,100,100,100,100,100,100,100,100,100,0  ,101,100,0  ,100},
+    {100,0  ,0  ,0  ,100,0  ,0  ,0  ,100,0  ,100,0  ,0  ,100,0  ,0  ,100},
+    {100,0  ,100,0  ,100,0  ,100,201,100,0  ,0  ,0  ,100,101,0  ,0  ,100},
+    {100,0  ,0  ,0  ,100,0  ,100,0  ,100,0  ,100,100,100,100,0  ,0  ,100},
+    {100,0  ,100,100,100,0  ,0  ,0  ,100,100,100,0  ,100,101,0  ,0  ,100},
+    {100,0  ,0  ,0  ,100,0  ,100,0  ,0  ,0  ,0  ,0  ,0  ,100,0  ,0  ,100},
+    {100,101,100,0  ,0  ,0  ,100,0  ,100,100,0  ,100,0  ,0  ,100,0  ,100},
+    {100,100,100,0  ,100,100,100,0  ,202,0  ,0  ,100,100,0  ,100,0  ,100},
+    {100,0  ,100,0  ,0  ,0  ,100,0  ,0  ,100,0  ,0  ,100,0  ,0  ,100,100},
+    {100,0  ,0  ,0  ,100,0  ,0  ,0  ,100,0  ,100,100,100,0  ,0  ,100,100},
+    {100,0  ,100,0  ,100,100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100,100,100},
+    {100,100,100,0  ,100,101,100,100,101,101,100,100,100,0  ,0  ,100,100},
+    {100,100,101,0  ,0  ,0  ,0  ,0  ,100,100,0  ,0  ,0  ,0  ,100,100,100},
+    {100,0  ,0  ,0  ,100,0  ,100,101,0  ,200,0  ,100,0  ,0  ,0  ,100,100},
+    {100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100},
+};
+int gameBoardInfo2[GBOARD_HEIGHT + 2][GBOARD_WIDTH + 2] = {
+    {100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100},
+    {100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100},
+    {100,0  ,100,0  ,0  ,100,100,100,0  ,100,100,100,0  ,0  ,100,0  ,100},
+    {100,0  ,0  ,0  ,101,0  ,0  ,0  ,0  ,0  ,0  ,0  ,101,0  ,0  ,0  ,100},
+    {100,0  ,0  ,100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100,0  ,0  ,100},
+    {100,0  ,0  ,100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100,0  ,0  ,100},
+    {100,0  ,0  ,100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100,0  ,0  ,100},
+    {100,0  ,0  ,100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100,0  ,0  ,100},
+    {100,0  ,0  ,100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100,0  ,0  ,100},
+    {100,0  ,0  ,0  ,100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100,0  ,0  ,0  ,100},
+    {100,101,0  ,0  ,0  ,100,0  ,0  ,0  ,0  ,0  ,100,0  ,0  ,0  ,0  ,100},
+    {100,101,0  ,0  ,0  ,0  ,100,0  ,0  ,0  ,100,0  ,0  ,0  ,0  ,101,100},
+    {100,101,101,0  ,0  ,0  ,0  ,100,100,100,0  ,0  ,0  ,0  ,101,101,100},
+    {100,101,101,0  ,101,0  ,0  ,0  ,0  ,0  ,0  ,0  ,101,0  ,101,101,100},
+    {100,101,100,0  ,101,101,0  ,0  ,0  ,0  ,0  ,101,101,0  ,100,101,100},
+    {100,101,0  ,0  ,101,101,101,0  ,0  ,0  ,101,101,101,0  ,0  ,101,100},
+    {100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100},
+};
+int gameBoardInfo3[GBOARD_HEIGHT + 2][GBOARD_WIDTH + 2] = {
+    {100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100},
+    {100,0  ,0  ,100,101,100,101,100,101,100,101,100,101,100,0  ,0  ,100},
+    {100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100},
+    {100,100,0  ,100,101,100,101,100,0  ,100,101,100,101,100,0  ,100,100},
+    {100,101,0  ,101,101,100,101,101,0  ,101,101,100,101,101,0  ,101,100},
+    {100,100,0  ,100,100,100,100,100,0  ,100,100,100,100,100,0  ,100,100},
+    {100,101,0  ,101,101,100,101,101,0  ,101,101,100,101,101,0  ,101,100},
+    {100,100,0  ,100,101,100,101,100,0  ,100,101,100,101,100,0  ,100,100},
+    {100,101,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,101,100},
+    {100,100,0  ,100,101,100,101,100,0  ,100,101,100,101,100,0  ,100,100},
+    {100,101,0  ,101,101,100,101,101,0  ,101,101,100,101,101,0  ,101,100},
+    {100,100,0  ,100,100,100,100,100,0  ,100,100,100,100,100,0  ,100,100},
+    {100,101,0  ,101,101,100,101,101,0  ,101,101,100,101,101,0  ,101,100},
+    {100,101,0  ,100,101,100,101,100,0  ,100,101,100,101,100,0  ,100,100},
+    {100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100},
+    {100,0  ,0  ,100,101,100,101,100,101,100,101,100,101,100,0  ,0  ,100},
+    {100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100},
+};
+int gameBoardInfo4[GBOARD_HEIGHT + 2][GBOARD_WIDTH + 2] = {
+    {100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100},
+    {100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100},
+    {100,101,101,100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100,101,101,100},
+    {100,101,100,100,100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100,100,100,101,100},
+    {100,101,101,100,100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100,100,101,101,100},
+    {100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100},
+    {100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100},
+    {100,0  ,0  ,101,0  ,100,100,100,100,100,100,100,0  ,101,0  ,0  ,100},
+    {100,0  ,0  ,101,0  ,100,100,100,100,100,100,100,0  ,101,0  ,0  ,100},
+    {100,0  ,0  ,101,0  ,100,100,100,100,100,100,100,0  ,101,0  ,0  ,100},
+    {100,0  ,0  ,101,0  ,100,100,100,100,100,100,100,0  ,101,0  ,0  ,100},
+    {100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100},
+    {100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100},
+    {100,101,101,100,100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100,100,101,101,100},
+    {100,101,100,100,100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100,100,100,101,100},
+    {100,101,0  ,100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100,0  ,101,100},
+    {100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100},
+};
+
+int gameBoardInfoTest[GBOARD_HEIGHT + 2][GBOARD_WIDTH + 2] = {
+    {100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100},
     {100,0  ,0  ,100,101,100,101,100,101,100,101,100,101,100,0  ,0  ,100},
     {100,0  ,0  ,0  ,101,101,101,101,101,101,101,101,101,0  ,0  ,0  ,100},
     {100,100,0  ,100,101,100,101,100,101,100,101,100,101,100,0  ,100,100},
-<<<<<<< HEAD
-    {100,101,101,101,101,101,101,101,101,101,101,101,101,101,101,101,100},
-    {100,100,101,100,101,100,101,100,101,100,101,100,101,100,101,100,100},
-    {100,101,101,101,101,101,101,101,101,101,101,101,101,101,101,101,100},
-    {100,100,101,100,101,100,101,100,101,100,101,100,101,100,101,100,100},
-    {100,101,101,101,101,101,101,101,101,101,101,101,101,101,101,101,100},
-    {100,100,101,100,101,100,101,100,101,100,101,100,101,100,101,100,100},
-    {100,101,101,101,101,101,101,101,101,101,101,101,101,101,101,101,100},
-    {100,100,101,100,101,100,101,100,101,100,101,100,101,100,101,100,100},
-    {100,101,101,101,101,101,101,101,101,101,101,101,101,101,101,101,100},
-    {100,101,0  ,100,101,100,101,100,101,100,101,100,101,100,0  ,100,100},
-    {100,0  ,0  ,0  ,101,101,101,101,101,101,101,101,101,0  ,0  ,0  ,100},
-    {100,0  ,0  ,100,101,100,101,100,101,100,101,100,101,100,0  ,0  ,100},
-=======
     {100,101,0,0,0,0,0,0,0,0,0,0,0,0,0,0,100},
     {100,100,0,100,101,100,101,100,101,100,101,100,101,100,0,100,100},
     {100,101,0,0,0,0,0,0,0,0,0,0,0,0,0,0,100},
@@ -160,111 +241,6 @@ int gameBoardInfo[GBOARD_HEIGHT + 2][GBOARD_WIDTH + 2] = {
     {100,101,0  ,100,101,100,101,100,101,100,101,100,101,100,0  ,100,100},
     {100,0  ,0  ,0  ,101,101,101,101,101,101,101,101,101,0  ,0  ,0  ,100},
     {100,0  ,0  ,0,0,0,0,0,0,0,0,0,0,0,0  ,0  ,100},
->>>>>>> npc_pc_boss
-    {100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100},
-};
-
-int gameBoardInfo1[GBOARD_HEIGHT + 2][GBOARD_WIDTH + 2] = {
-    {100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100},
-    {100,0  ,0  ,100,101,100,101,100,101,100,101,100,101,100,0  ,0  ,100},
-    {100,0  ,0  ,0  ,101,101,101,101,101,101,101,101,101,0  ,0  ,0  ,100},
-    {100,100,0  ,100,101,100,101,100,101,100,101,100,101,100,0  ,100,100},
-    {100,101,101,101,101,101,101,101,101,101,101,101,101,101,101,101,100},
-    {100,100,101,100,101,100,101,100,101,100,101,100,101,100,101,100,100},
-    {100,101,101,101,101,101,101,101,101,101,101,101,101,101,101,101,100},
-    {100,100,101,100,101,100,101,100,101,100,101,100,101,100,101,100,100},
-    {100,101,101,101,101,101,101,101,101,101,101,101,101,101,101,101,100},
-    {100,100,101,100,101,100,101,100,101,100,101,100,101,100,101,100,100},
-    {100,101,101,101,101,101,101,101,101,101,101,101,101,101,101,101,100},
-    {100,100,101,100,101,100,101,100,101,100,101,100,101,100,101,100,100},
-    {100,101,101,101,101,101,101,101,101,101,101,101,101,101,101,101,100},
-    {100,101,0  ,100,101,100,101,100,101,100,101,100,101,100,0  ,100,100},
-    {100,0  ,0  ,0  ,101,101,101,101,101,101,101,101,101,0  ,0  ,0  ,100},
-    {100,0  ,0  ,100,101,100,101,100,101,100,101,100,101,100,0  ,0  ,100},
-    {100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100},
-};
-int gameBoardInfo2[GBOARD_HEIGHT + 2][GBOARD_WIDTH + 2] = {
-    {100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100},
-<<<<<<< HEAD
-    {100,0  ,0  ,101,101,0  ,0  ,0  ,101,0  ,0  ,0  ,101,101,101,101,100},
-    {100,0  ,100,101,0  ,100,100,100,0  ,100,100,100,0  ,101,100,101,100},
-    {100,0  ,101,0  ,100,0  ,0  ,0  ,101,0  ,0  ,0  ,100,0  ,101,101,100},
-    {100,101,0  ,100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100,0  ,101,100},
-=======
-    {100,0  ,0  ,0,0,0  ,0  ,0  ,0,0  ,0  ,0  ,101,101,101,101,100},
-    {100,0  ,100,0,0  ,100,100,100,0  ,100,100,100,0  ,101,100,101,100},
-    {100,0  ,101,0  ,100,0  ,0  ,0  ,0,0  ,0  ,0  ,100,0  ,101,101,100},
-    {100,0,0  ,100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100,0  ,101,100},
->>>>>>> npc_pc_boss
-    {100,101,0  ,100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100,0  ,101,100},
-    {100,101,0  ,100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100,0  ,101,100},
-    {100,101,0  ,100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100,0  ,101,100},
-    {100,101,0  ,100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100,0  ,101,100},
-    {100,101,101,0  ,100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100,0  ,101,0  ,100},
-    {100,101,101,101,0  ,100,0  ,0  ,0  ,0  ,0  ,100,0  ,101,101,101,100},
-    {100,101,101,101,101,0  ,100,0  ,0  ,0  ,100,0  ,101,101,101,101,100},
-    {100,101,101,101,101,101,0  ,100,100,100,0  ,101,101,101,101,101,100},
-    {100,101,101,0  ,101,101,101,0  ,0  ,0  ,101,101,101,0  ,101,101,100},
-    {100,101,100,0  ,101,101,101,101,101,101,101,101,101,0  ,100,101,100},
-    {100,101,0  ,0  ,101,101,101,0  ,0  ,0  ,101,101,101,0  ,0  ,101,100},
-    {100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100},
-};
-int gameBoardInfo3[GBOARD_HEIGHT + 2][GBOARD_WIDTH + 2] = {
-    {100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100},
-    {100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100},
-    {100,0  ,100,100,100,100,100,100,100,100,100,100,0  ,101,100,101,100},
-    {100,0  ,0  ,0  ,100,0  ,101,0  ,100,0  ,100,0  ,0  ,100,0  ,0  ,100},
-    {100,0  ,100,0  ,100,0  ,100,101,100,0  ,201,0  ,100,101,101,0  ,100},
-    {100,0  ,0  ,0  ,100,101,100,101,100,0  ,100,100,0  ,100,0  ,101,100},
-    {100,0  ,100,100,100,0  ,0  ,202,100,100,100,0  ,100,101,101,0  ,100},
-    {100,0  ,0  ,0  ,100,101,100,101,0  ,0  ,101,0  ,0  ,100,0  ,101,100},
-    {100,101,100,0  ,0  ,0  ,100,0  ,100,100,0  ,100,0  ,0,100,101,100},
-    {100,100,100,0  ,100,100,100,101,101,0  ,101,100,100,0  ,100,0  ,100},
-    {100,0  ,100,0  ,0  ,0  ,100,0  ,0  ,100,0  ,0  ,100,0  ,0  ,100,100},
-    {100,0  ,0  ,0  ,100,0  ,101,101,100,0  ,100,100,100,0  ,0  ,100,100},
-    {100,0  ,100,0  ,100,100,0  ,0  ,101,0  ,0  ,101,0  ,0  ,100,100,100},
-    {100,100,100,0  ,100,101,100,100,0  ,0  ,100,100,100,0  ,0  ,100,100},
-    {100,100,101,0  ,101,101,0  ,0  ,100,100,0  ,0  ,201,0  ,100,100,100},
-    {100,0  ,101,0  ,100,0  ,100,101,0  ,200,0  ,100,0  ,0  ,0  ,100,100},
-    {100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100},
-};
-int gameBoardInfo4[GBOARD_HEIGHT + 2][GBOARD_WIDTH + 2] = {
-    {100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100},
-    {100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100},
-    {100,101,101,100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100,101,101,100},
-    {100,101,100,100,100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100,100,100,101,100},
-    {100,101,101,100,100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100,100,101,101,100},
-    {100,0  ,0  ,101,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,101,0  ,0  ,100},
-    {100,0  ,0  ,101,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,101,0  ,0  ,100},
-    {100,0  ,0  ,101,100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100,101,0  ,0  ,100},
-    {100,0  ,0  ,101,100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100,101,0  ,0  ,100},
-    {100,0  ,0  ,101,100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100,101,0  ,0  ,100},
-    {100,0  ,0  ,101,100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100,101,0  ,0  ,100},
-    {100,0  ,0  ,101,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,101,0  ,0  ,100},
-    {100,0  ,0  ,101,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,101,0  ,0  ,100},
-    {100,101,101,100,100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100,100,101,101,100},
-    {100,101,100,100,100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100,100,100,101,100},
-    {100,101,0  ,100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100,0  ,101,100},
-    {100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100},
-};
-
-int gameBoardInfoTest[GBOARD_HEIGHT + 2][GBOARD_WIDTH + 2] = {
-    {100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100},
-    {100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100},
-    {100,101,101,100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100,101,101,100},
-    {100,101,100,100,100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100,100,100,101,100},
-    {100,101,101,100,100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100,100,101,101,100},
-    {100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100},
-    {100,0  ,0  ,101,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,101,0  ,0  ,100},
-    {100,0  ,0  ,101,100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100,101,0  ,0  ,100},
-    {100,0  ,0  ,101,100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100,101,0  ,0  ,100},
-    {100,0  ,0  ,101,100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100,101,0  ,0  ,100},
-    {100,0  ,0  ,101,100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100,101,0  ,0  ,100},
-    {100,0  ,0  ,101,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,101,0  ,0  ,100},
-    {100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100},
-    {100,101,101,100,100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100,100,101,101,100},
-    {100,101,100,100,100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100,100,100,101,100},
-    {100,101,0  ,100,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,0  ,100,0  ,101,100},
     {100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100},
 };
 
@@ -373,8 +349,6 @@ int detectBlock(int i, int j)
 
     return 0;
 }
-<<<<<<< HEAD
-=======
 int detectBossWeakBlock(int i, int j)
 {
     if (gameBoardInfo[i][j] == BossWeakBlock)
@@ -383,7 +357,6 @@ int detectBossWeakBlock(int i, int j)
     }
     return 0;
 }
->>>>>>> npc_pc_boss
 int makeRandomItem()
 {
     int ran = rand() % 3;
@@ -416,40 +389,6 @@ void explosion()
                     gameBoardInfo[i][j] = BombZero;
                 for (int x = 1; x < MainCharacter.plusBombPowerItem; x++)
                 {
-<<<<<<< HEAD
-                    if(gameBoardInfo[i][j+x]>=ItemHeart&& gameBoardInfo[i][j + x] <= ItemPower)
-                        gameBoardInfo[i][j + x] = BombZero;
-                    else
-                    {
-                        if ((detectCharacter(i, j + x) == 0 && (detectBlock(i, j + x) == 0) && gameBoardInfo[i][j + x] == 0) || gameBoardInfo[i][j + x] == BlockWeak)
-                        {
-                            if (gameBoardInfo[i][j + x] == BlockWeak)
-                            {
-                                int ran = rand() % 3;
-                                if (ran == 0)
-                                {
-                                    gameBoardInfo[i][j + x] = makeRandomItem();
-
-                                }
-                                else
-                                {
-                                    gameBoardInfo[i][j + x] = BombZero;
-
-                                }
-                                break;
-
-                            }
-                            if (gameBoardInfo[i][j + x]<ItemHeart || gameBoardInfo[i][j + x]>ItemPower)
-
-                                gameBoardInfo[i][j + x] = BombZero;
-
-
-
-
-                        }
-                        else
-                            break;
-=======
                     if (gameBoardInfo[i][j + x] >= ItemHeart && gameBoardInfo[i][j + x] <= ItemPower)
                         gameBoardInfo[i][j + x] = BombZero;
                     else
@@ -490,40 +429,10 @@ void explosion()
                             else
                                 break;
                         }
->>>>>>> npc_pc_boss
                     }
                 }
                 for (int x = 1; x < MainCharacter.plusBombPowerItem; x++)
                 {
-<<<<<<< HEAD
-                    if (gameBoardInfo[i][j -x] >= ItemHeart && gameBoardInfo[i][j -x] <= ItemPower)
-                        gameBoardInfo[i][j - x] = BombZero;
-                    else
-                    {
-                        if ((detectCharacter(i, j - x) == 0 && (detectBlock(i, j - x) == 0) && gameBoardInfo[i][j - x] == 0) || gameBoardInfo[i][j - x] == BlockWeak)
-                        {
-                            if (gameBoardInfo[i][j - x] == BlockWeak)
-                            {
-                                int ran = rand() % 3;
-                                if (ran == 0)
-                                {
-                                    gameBoardInfo[i][j - x] = makeRandomItem();
-
-                                }
-                                else
-                                {
-                                    gameBoardInfo[i][j - x] = BombZero;
-
-                                }
-                                break;
-                            }
-                            if (gameBoardInfo[i][j - x]<ItemHeart || gameBoardInfo[i][j - x]>ItemPower)
-                                gameBoardInfo[i][j - x] = BombZero;
-
-                        }
-                        else
-                            break;
-=======
                     if (gameBoardInfo[i][j - x] >= ItemHeart && gameBoardInfo[i][j - x] <= ItemPower)
                         gameBoardInfo[i][j - x] = BombZero;
                     else
@@ -561,40 +470,10 @@ void explosion()
                             else
                                 break;
                         }
->>>>>>> npc_pc_boss
                     }
                 }
                 for (int x = 1; x < MainCharacter.plusBombPowerItem; x++)
                 {
-<<<<<<< HEAD
-                    if (gameBoardInfo[i+x][j] >= ItemHeart && gameBoardInfo[i+x][j] <= ItemPower)
-                        gameBoardInfo[i+x][j] = BombZero;
-                    else
-                    {
-                        if ((detectCharacter(i + x, j) == 0 && (detectBlock(i + x, j) == 0) && gameBoardInfo[i + x][j] == 0) || gameBoardInfo[i + x][j] == BlockWeak)
-                        {
-                            if (gameBoardInfo[i + x][j] == BlockWeak)
-                            {
-                                int ran = rand() % 3;
-                                if (ran == 0)
-                                {
-                                    gameBoardInfo[i + x][j] = makeRandomItem();
-
-                                }
-                                else
-                                {
-                                    gameBoardInfo[i + x][j] = BombZero;
-
-                                }
-                                break;
-                            }
-                            if (gameBoardInfo[i + x][j]<ItemHeart || gameBoardInfo[i + x][j]>ItemPower)
-                                gameBoardInfo[i + x][j] = BombZero;
-
-                        }
-                        else
-                            break;
-=======
                     if (gameBoardInfo[i + x][j] >= ItemHeart && gameBoardInfo[i + x][j] <= ItemPower)
                         gameBoardInfo[i + x][j] = BombZero;
                     else
@@ -631,39 +510,10 @@ void explosion()
                             else
                                 break;
                         }
->>>>>>> npc_pc_boss
                     }
                 }
                 for (int x = 1; x < MainCharacter.plusBombPowerItem; x++)
                 {
-<<<<<<< HEAD
-                    if (gameBoardInfo[i-x][j] >= ItemHeart && gameBoardInfo[i-x][j + x] <= ItemPower)
-                        gameBoardInfo[i-x][j] = BombZero;
-                    else
-                    {
-                        if ((detectCharacter(i - x, j) == 0 && (detectBlock(i - x, j) == 0) && gameBoardInfo[i - x][j] == 0) || gameBoardInfo[i - x][j] == BlockWeak)
-                        {
-                            if (gameBoardInfo[i - x][j] == BlockWeak)
-                            {
-                                int ran = rand() % 3;
-                                if (ran == 0)
-                                {
-                                    gameBoardInfo[i - x][j] = makeRandomItem();
-
-                                }
-                                else
-                                {
-                                    gameBoardInfo[i - x][j] = BombZero;
-                                }
-                                break;
-                            }
-                            if (gameBoardInfo[i - x][j]<ItemHeart || gameBoardInfo[i - x][j]>ItemPower)
-                                gameBoardInfo[i - x][j] = BombZero;
-
-                        }
-                        else
-                            break;
-=======
                     if (gameBoardInfo[i - x][j] >= ItemHeart && gameBoardInfo[i - x][j + x] <= ItemPower)
                         gameBoardInfo[i - x][j] = BombZero;
                     else
@@ -699,7 +549,6 @@ void explosion()
                             else
                                 break;
                         }
->>>>>>> npc_pc_boss
                     }
                 }
                 drawingTotalMap();
@@ -715,10 +564,7 @@ void explosion()
     }
 }
 
-<<<<<<< HEAD
-=======
 
->>>>>>> npc_pc_boss
 void findChangingBomb(double current_time)
 {
     for (int i = 0; i < 17; i++)
@@ -965,11 +811,7 @@ void move_nopattern_npc() {
         int random;
         int x, y;
         random = rand() % 4; //숫자를 높이면 더 pc을 따라간다.
-<<<<<<< HEAD
-        if (random < 1) {
-=======
         if (random < 3) {
->>>>>>> npc_pc_boss
             random = rand() % 4; //random 0 왼 1 오 2 위 3 아래
             if (random == 0) {
                 x = -1;
@@ -1064,8 +906,6 @@ void spawnnpc(int n) { //n*2개의 npc 만큼 랜덤한 장소에 소환
         }
         setnpc_nopattern(i, y, x);
     }
-<<<<<<< HEAD
-=======
     return;
 }
 void addspawnnpc(int n) {
@@ -1080,7 +920,7 @@ void addspawnnpc(int n) {
     }
     free(npc_nopattern);
     free(npc_pattern);
-    
+
     for (int i = cnt_npc_pattern - n; i < cnt_npc_pattern; i++) {
         while (1) {
             y = rand() % GBOARD_HEIGHT + 1;
@@ -1122,7 +962,6 @@ void deletenpc() {
     free(npc_nopattern);
     free(npc_pattern);
     return;
->>>>>>> npc_pc_boss
 }
 void spawnbomb(int n) {//n개의 물풍선을 랜덤한 장소에 소환
     int y, x;
@@ -1139,12 +978,6 @@ void spawnbomb(int n) {//n개의 물풍선을 랜덤한 장소에 소환
     }
     return;
 }
-<<<<<<< HEAD
-
-
-
-int before_key;
-=======
 void spawnbossweak(int n) {
     int y, x;
     for (int i = 0; i < n; i++) {
@@ -1179,7 +1012,6 @@ void npcspeedup() {
 int flag = 1; //boss 단계 구분하는 flag
 int before_key;
 int e = 0; //공격이랑 npc속도 관련
->>>>>>> npc_pc_boss
 void ProcessKeyInput() {
     int key;
 
@@ -1213,8 +1045,6 @@ void ProcessKeyInput() {
                 if (before_key == 0)
                     putBomb(pc->pos.X, pc->pos.Y + 1);
                 break;
-<<<<<<< HEAD
-=======
             }
             }
 
@@ -1237,93 +1067,108 @@ void ProcessKeyInput() {
             if (e % 600 == 0) {
                 deletebossweak();
                 spawnbossweak(4);
->>>>>>> npc_pc_boss
             }
-            }
-
-            before_key = key;
         }
-<<<<<<< HEAD
-=======
-        
+
         e++;
->>>>>>> npc_pc_boss
 
         Sleep(20);
     }
     return;
 }
 int main() {
-<<<<<<< HEAD
-    int flag;
-
-=======
->>>>>>> npc_pc_boss
+    int key;
     settingUiInit();
     srand(time(NULL));
     RemoveCursor();
-    drawingTotalMap();
-    Sleep(1000);
+    //drawingTotalMap();             // 이거 왜있는거죠? 주석처리 할게용 메뉴 만들때 오류남
+    Sleep(1000);                     // 얘도 왜있는거지 ㅇㄴ
     pc = malloc(sizeof(PC_pos));
-    setpc(1, 1);                           // pc 위치 초기화
-    spawnnpc(2); //각각 3개의 npc를 소환하는 함수 만듬
-    MainCharacter.bombNum = 0;
-    MainCharacter.plusBombNumItem = 3;     // 물폭탄 개수 초기화
-    MainCharacter.plusBombPowerItem = 2;   // 화력 초기화
-<<<<<<< HEAD
-    MainCharacter.hp = 3;                  // pc hp 초기화
-=======
-    MainCharacter.hp = 5;   
-    bossCharacter.boss_hp = 42;
-    // pc hp 초기화
->>>>>>> npc_pc_boss
-    drawingTotalMap();
+
     while (1) {
-        //printf("%lf", time);
-        time_t current_time = time(NULL);
-        double time = (double)current_time;
-        findChangingBomb(time);
-        explosion();
-        ProcessKeyInput();
-<<<<<<< HEAD
-        move_pattern_npc();
-        move_nopattern_npc();
-        /* 스테이지 ㄱㄱ
-        */
-        if (MainCharacter.hp < 1) break; //npc가 모두 죽으면 끝내준다. or pc 죽으면 끝내준다.
-        if (npc_alldiecheck()) {
-            flag = nextStage();
-            if (flag == 0) {
-                break; // 다음스테이지가 없다면 break
-            }
-        }
-=======
-        printf("%d", bossCharacter.boss_hp);
-        /* 스테이지 ㄱㄱ
-        */
-        if (MainCharacter.hp < 1) break; //npc가 모두 죽으면 끝내준다. or pc 죽으면 끝내준다.
-        if (flag == 1) { //보스 맵 아닐때 
-            if (npc_alldiecheck()) {
-                free(npc_pattern);
-                free(npc_nopattern);
-                flag = nextStage();
-                if (flag == 0) {
-                    break; //다음스테이지가 없다면 break
+        stageNum = 1;
+        erazeWindow();
+        while (1) { // 메뉴입니다.
+            drawingGameMenu();
+            if (_kbhit() != 0) {
+                key = _getch();
+                switch (key) {
+                case 72:
+                    menuUp();
+                    break;
+                case 80:
+                    menuDown();
+                    break;
+                case 32:
+                    if (curMenu == 0) {
+                        whatClick = 1;
+                    }
+                    else {
+                        whatClick = 2;
+                    }
+                    break;
                 }
             }
-        }
-        else { //보스 맵일때 
-            
-            if (bossCharacter.boss_hp == 0) {
-                flag = nextStage();
-                if (flag == 0) {
-                    break; //다음스테이지가 없다면 break
-                }
+            if (whatClick == 1) {
+                whatClick = 0;
+                break;
+            }
+            else if (whatClick == 2) {
+                whatClick = 0;
+                wantExit = 1;
+                break;
             }
         }
-        
->>>>>>> npc_pc_boss
+
+        if (wantExit == 1) {
+            break;
+        }
+
+
+        setpc(1, 1);                           // pc 위치 초기화
+        spawnnpc(2); //각각 3개의 npc를 소환하는 함수 만듬
+        MainCharacter.bombNum = 0;
+        MainCharacter.plusBombNumItem = 3;     // 물폭탄 개수 초기화
+        MainCharacter.plusBombPowerItem = 2;   // 화력 초기화
+        MainCharacter.hp = 5;
+        bossCharacter.boss_hp = 42;
+        // pc hp 초기화
+        erazeWindow();
+        drawingTotalMap();
+        while (1) {
+            //printf("%lf", time);
+            time_t current_time = time(NULL);
+            double time = (double)current_time;
+            findChangingBomb(time);
+            explosion();
+            ProcessKeyInput();
+            printf("%d", bossCharacter.boss_hp);
+            /* 스테이지 ㄱㄱ
+            */
+            if (MainCharacter.hp < 1) break; //npc가 모두 죽으면 끝내준다. or pc 죽으면 끝내준다.
+            if (flag == 1) { //보스 맵 아닐때 
+                if (npc_alldiecheck()) {
+                    free(npc_pattern);
+                    free(npc_nopattern);
+                    flag = nextStage();
+                    if (flag == 0) {
+                        break; //다음스테이지가 없다면 break
+                    }
+                }
+            }
+            else { //보스 맵일때 
+
+                if (bossCharacter.boss_hp == 0) {
+                    flag = nextStage();
+                    if (flag == 0) {
+                        break; //다음스테이지가 없다면 break
+                    }
+                }
+            }
+
+        }
     }
+
     return 0;
 }
 
@@ -1362,11 +1207,282 @@ void printGameBoard() {
             else if (100 <= gameBoardInfo[y][x] && gameBoardInfo[y][x] < 200) {
                 switch (gameBoardInfo[y][x]) {
                 case BlockSolid:
-                    printf("■");
+                    if (stageNum == 4 && x >= BOSS_START_X && y >= BOSS_START_Y && x <= 11 && y <= 10) {
+                        if (bossCharacter.phase == 0) {
+                            if (x == BOSS_START_X && y == BOSS_START_Y) {
+                                printf("┌ ");
+                            }
+                            else if (x == BOSS_START_X + 1 && y == BOSS_START_Y) {
+                                printf("──");
+                            }
+                            else if (x == BOSS_START_X + 2 && y == BOSS_START_Y) {
+                                printf("──");
+                            }
+                            else if (x == BOSS_START_X + 3 && y == BOSS_START_Y) {
+                                printf("──");
+                            }
+                            else if (x == BOSS_START_X + 4 && y == BOSS_START_Y) {
+                                printf("──");
+                            }
+                            else if (x == BOSS_START_X + 5 && y == BOSS_START_Y) {
+                                printf(" ┐");
+                            }
+                            else if (x == BOSS_START_X + 6 && y == BOSS_START_Y) {
+                                printf("  ");
+                            }
+                            else if (x == BOSS_START_X && y == BOSS_START_Y + 1) {
+                                printf("O ");
+                            }
+                            else if (x == BOSS_START_X + 1 && y == BOSS_START_Y + 1) {
+                                printf("| ");
+                            }
+                            else if (x == BOSS_START_X + 2 && y == BOSS_START_Y + 1) {
+                                printf("o ");
+                            }
+                            else if (x == BOSS_START_X + 3 && y == BOSS_START_Y + 1) {
+                                printf("@ ");
+                            }
+                            else if (x == BOSS_START_X + 4 && y == BOSS_START_Y + 1) {
+                                printf("o ");
+                            }
+                            else if (x == BOSS_START_X + 5 && y == BOSS_START_Y + 1) {
+                                printf("| ");
+                            }
+                            else if (x == BOSS_START_X + 6 && y == BOSS_START_Y + 1) {
+                                printf("O ");
+                            }
+                            else if (x == BOSS_START_X && y == BOSS_START_Y + 2) {
+                                printf("└ ");
+                            }
+                            else if (x == BOSS_START_X + 1 && y == BOSS_START_Y + 2) {
+                                printf("──");
+                            }
+                            else if (x == BOSS_START_X + 2 && y == BOSS_START_Y + 2) {
+                                printf("──");
+                            }
+                            else if (x == BOSS_START_X + 3 && y == BOSS_START_Y + 2) {
+                                printf("──");
+                            }
+                            else if (x == BOSS_START_X + 4 && y == BOSS_START_Y + 2) {
+                                printf("──");
+                            }
+                            else if (x == BOSS_START_X + 5 && y == BOSS_START_Y + 2) {
+                                printf("─┘");
+                            }
+                            else if (x == BOSS_START_X + 6 && y == BOSS_START_Y + 2) {
+                                printf("  ");
+                            }
+                            else if (x == BOSS_START_X && y == BOSS_START_Y + 3) {
+                                printf("∮");
+                            }
+                            else if (x == BOSS_START_X + 1 && y == BOSS_START_Y + 3) {
+                                printf("∮");
+                            }
+                            else if (x == BOSS_START_X + 2 && y == BOSS_START_Y + 3) {
+                                printf("∮");
+                            }
+                            else if (x == BOSS_START_X + 3 && y == BOSS_START_Y + 3) {
+                                printf("∮");
+                            }
+                            else if (x == BOSS_START_X + 4 && y == BOSS_START_Y + 3) {
+                                printf("∮");
+                            }
+                            else if (x == BOSS_START_X + 5 && y == BOSS_START_Y + 3) {
+                                printf("∮");
+                            }
+                            else if (x == BOSS_START_X + 6 && y == BOSS_START_Y + 3) {
+                                printf("∮");
+                            }
+                        }
+                        else if (bossCharacter.phase == 1) {
+                            if (x == BOSS_START_X && y == BOSS_START_Y) {
+                                printf("┌ ");
+                            }
+                            else if (x == BOSS_START_X + 1 && y == BOSS_START_Y) {
+                                printf("──");
+                            }
+                            else if (x == BOSS_START_X + 2 && y == BOSS_START_Y) {
+                                printf("──");
+                            }
+                            else if (x == BOSS_START_X + 3 && y == BOSS_START_Y) {
+                                printf("──");
+                            }
+                            else if (x == BOSS_START_X + 4 && y == BOSS_START_Y) {
+                                printf("──");
+                            }
+                            else if (x == BOSS_START_X + 5 && y == BOSS_START_Y) {
+                                printf(" ┐");
+                            }
+                            else if (x == BOSS_START_X + 6 && y == BOSS_START_Y) {
+                                printf("  ");
+                            }
+                            else if (x == BOSS_START_X && y == BOSS_START_Y + 1) {
+                                printf(" ┌");
+                            }
+                            else if (x == BOSS_START_X + 1 && y == BOSS_START_Y + 1) {
+                                printf(" |");
+                            }
+                            else if (x == BOSS_START_X + 2 && y == BOSS_START_Y + 1) {
+                                printf("Φ");
+                            }
+                            else if (x == BOSS_START_X + 3 && y == BOSS_START_Y + 1) {
+                                printf("言");
+                            }
+                            else if (x == BOSS_START_X + 4 && y == BOSS_START_Y + 1) {
+                                printf("Φ");
+                            }
+                            else if (x == BOSS_START_X + 5 && y == BOSS_START_Y + 1) {
+                                printf("|");
+                            }
+                            else if (x == BOSS_START_X + 6 && y == BOSS_START_Y + 1) {
+                                printf("ノ");
+                            }
+                            else if (x == BOSS_START_X && y == BOSS_START_Y + 2) {
+                                printf("└ ");
+                            }
+                            else if (x == BOSS_START_X + 1 && y == BOSS_START_Y + 2) {
+                                printf("──");
+                            }
+                            else if (x == BOSS_START_X + 2 && y == BOSS_START_Y + 2) {
+                                printf("──");
+                            }
+                            else if (x == BOSS_START_X + 3 && y == BOSS_START_Y + 2) {
+                                printf("──");
+                            }
+                            else if (x == BOSS_START_X + 4 && y == BOSS_START_Y + 2) {
+                                printf("──");
+                            }
+                            else if (x == BOSS_START_X + 5 && y == BOSS_START_Y + 2) {
+                                printf("─┘");
+                            }
+                            else if (x == BOSS_START_X + 6 && y == BOSS_START_Y + 2) {
+                                printf("  ");
+                            }
+                            else if (x == BOSS_START_X && y == BOSS_START_Y + 3) {
+                                printf("∮");
+                            }
+                            else if (x == BOSS_START_X + 1 && y == BOSS_START_Y + 3) {
+                                printf("∮");
+                            }
+                            else if (x == BOSS_START_X + 2 && y == BOSS_START_Y + 3) {
+                                printf("∮");
+                            }
+                            else if (x == BOSS_START_X + 3 && y == BOSS_START_Y + 3) {
+                                printf("∮");
+                            }
+                            else if (x == BOSS_START_X + 4 && y == BOSS_START_Y + 3) {
+                                printf("∮");
+                            }
+                            else if (x == BOSS_START_X + 5 && y == BOSS_START_Y + 3) {
+                                printf("∮");
+                            }
+                            else if (x == BOSS_START_X + 6 && y == BOSS_START_Y + 3) {
+                                printf("∮");
+                            }
+                        }
+                        else if (bossCharacter.phase == 2) {
+                            if (x == BOSS_START_X && y == BOSS_START_Y) {
+                                printf("┌ ");
+                            }
+                            else if (x == BOSS_START_X + 1 && y == BOSS_START_Y) {
+                                printf("──");
+                            }
+                            else if (x == BOSS_START_X + 2 && y == BOSS_START_Y) {
+                                printf("──");
+                            }
+                            else if (x == BOSS_START_X + 3 && y == BOSS_START_Y) {
+                                printf("──");
+                            }
+                            else if (x == BOSS_START_X + 4 && y == BOSS_START_Y) {
+                                printf("──");
+                            }
+                            else if (x == BOSS_START_X + 5 && y == BOSS_START_Y) {
+                                printf(" ┐");
+                            }
+                            else if (x == BOSS_START_X + 6 && y == BOSS_START_Y) {
+                                printf("  ");
+                            }
+                            else if (x == BOSS_START_X && y == BOSS_START_Y + 1) {
+                                printf("o");
+                            }
+                            else if (x == BOSS_START_X + 1 && y == BOSS_START_Y + 1) {
+                                printf("Σ|");
+                            }
+                            else if (x == BOSS_START_X + 2 && y == BOSS_START_Y + 1) {
+                                printf("T");
+                            }
+                            else if (x == BOSS_START_X + 3 && y == BOSS_START_Y + 1) {
+                                printf("ω");
+                            }
+                            else if (x == BOSS_START_X + 4 && y == BOSS_START_Y + 1) {
+                                printf("T");
+                            }
+                            else if (x == BOSS_START_X + 5 && y == BOSS_START_Y + 1) {
+                                printf("|");
+                            }
+                            else if (x == BOSS_START_X + 6 && y == BOSS_START_Y + 1) {
+                                printf("o");
+                            }
+                            else if (x == BOSS_START_X && y == BOSS_START_Y + 2) {
+                                printf("└ ");
+                            }
+                            else if (x == BOSS_START_X + 1 && y == BOSS_START_Y + 2) {
+                                printf("──");
+                            }
+                            else if (x == BOSS_START_X + 2 && y == BOSS_START_Y + 2) {
+                                printf("──");
+                            }
+                            else if (x == BOSS_START_X + 3 && y == BOSS_START_Y + 2) {
+                                printf("──");
+                            }
+                            else if (x == BOSS_START_X + 4 && y == BOSS_START_Y + 2) {
+                                printf("──");
+                            }
+                            else if (x == BOSS_START_X + 5 && y == BOSS_START_Y + 2) {
+                                printf("─┘");
+                            }
+                            else if (x == BOSS_START_X + 6 && y == BOSS_START_Y + 2) {
+                                printf("  ");
+                            }
+                            else if (x == BOSS_START_X && y == BOSS_START_Y + 3) {
+                                printf("∮");
+                            }
+                            else if (x == BOSS_START_X + 1 && y == BOSS_START_Y + 3) {
+                                printf("∮");
+                            }
+                            else if (x == BOSS_START_X + 2 && y == BOSS_START_Y + 3) {
+                                printf("∮");
+                            }
+                            else if (x == BOSS_START_X + 3 && y == BOSS_START_Y + 3) {
+                                printf("∮");
+                            }
+                            else if (x == BOSS_START_X + 4 && y == BOSS_START_Y + 3) {
+                                printf("∮");
+                            }
+                            else if (x == BOSS_START_X + 5 && y == BOSS_START_Y + 3) {
+                                printf("∮");
+                            }
+                            else if (x == BOSS_START_X + 6 && y == BOSS_START_Y + 3) {
+                                printf("∮");
+                            }
+                        }
+                    }
+                    else {
+                        printf("■");
+                    }
                     break;
                 case BlockWeak:
                     printf("▦");
                     break;
+                case BossWeakBlock:
+                    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), PURPLE);
+                    printf("▣");
+                    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), WHITE);
+                    break;
+                case BossWeakBlockAttacked:
+                    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), WHITE);
+                    printf("▣");
+                    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), WHITE);
                 default:
                     break;
                 }
@@ -1571,11 +1687,7 @@ void drawPowerUI() {
 
 void drawNpcHP() {
     SetCurrentCursorPos(STATUS_MENU_WINDOW_X, STATUS_MENU_WINDOW_Y + 6);
-<<<<<<< HEAD
-    if (1) {
-=======
-    if (bossCharacter.boss_hp/10>=3) {
->>>>>>> npc_pc_boss
+    if (bossCharacter.boss_hp / 10 >= 3) {
         printf("보스 HP : ■■■■■■■■■■■■■■");
     }
     else if (1) {
@@ -1595,14 +1707,6 @@ int nextStage() {
     if (stageNum == 5) {
         return 0;
     }
-<<<<<<< HEAD
-    if (stageNum == 2) {
-        for (i = 0; i < GBOARD_HEIGHT + 2; i++) {
-            for (j = 0; j < GBOARD_WIDTH + 2; j++) {
-                gameBoardInfo[i][j] = gameBoardInfo2[i][j];
-            }
-        }
-=======
     if (stageNum == 2) { //만약 보스라고 생각한다.
         for (i = 0; i < GBOARD_HEIGHT + 2; i++) {
             for (j = 0; j < GBOARD_WIDTH + 2; j++) {
@@ -1618,7 +1722,6 @@ int nextStage() {
         drawingTotalMap();
         npcspeed = 20;
         return 2; //return 2로 신호를 준다.
->>>>>>> npc_pc_boss
     }
     if (stageNum == 3) {
         for (i = 0; i < GBOARD_HEIGHT + 2; i++) {
@@ -1627,11 +1730,7 @@ int nextStage() {
             }
         }
     }
-<<<<<<< HEAD
     if (stageNum == 4) {
-=======
-    if (stageNum == 4) {  
->>>>>>> npc_pc_boss
         for (i = 0; i < GBOARD_HEIGHT + 2; i++) {
             for (j = 0; j < GBOARD_WIDTH + 2; j++) {
                 gameBoardInfo[i][j] = gameBoardInfo4[i][j];
@@ -1648,4 +1747,48 @@ int nextStage() {
     drawingTotalMap();
 
     return 1;
+}
+
+void drawingGameMenu() {
+    if (curMenu == 0) {
+        SetCurrentCursorPos(50, 10);
+        SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), RED);
+        printf("게임시작");
+        SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), WHITE);
+        SetCurrentCursorPos(50, 15);
+        printf("게임종료");
+    }
+    if (curMenu == 1) {
+        SetCurrentCursorPos(50, 10);
+        printf("게임시작");
+        SetCurrentCursorPos(50, 15);
+        SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), RED);
+        printf("게임종료");
+        SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), WHITE);
+    }
+
+}
+
+void menuUp() {
+    curMenu = 0;
+}
+
+void menuDown() {
+    curMenu = 1;
+}
+
+void erazeWindow() {
+    int x, y;
+    int cursX, cursY;
+
+    for (y = 0; y < 25 + 2; y++)
+    {
+        for (x = 0; x < 100 + 2; x++)
+        {
+            cursX = x * 2;
+            cursY = y;
+            SetCurrentCursorPos(cursX, cursY);
+            printf("  ");
+        }
+    }
 }
