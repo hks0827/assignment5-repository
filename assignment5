@@ -1204,13 +1204,8 @@ int main() {
         setpc(1, 1); // pc 위치 초기화
         //각각 3개의 npc를 소환하는 함수 만듬
         MainCharacter.bombNum = 0;
-<<<<<<< HEAD
-        MainCharacter.plusBombNumItem = 3;     // 물폭탄 개수 초기화
-        MainCharacter.plusBombPowerItem = 2;   // 화력 초기화
-=======
         MainCharacter.plusBombNumItem = 3; // 물폭탄 개수 초기화
         MainCharacter.plusBombPowerItem = 2; // 화력 초기화
->>>>>>> Develop
         MainCharacter.hp = 3;
         bossCharacter.boss_hp = 10;
         // pc hp 초기화
@@ -1884,13 +1879,8 @@ int nextStage() {
     spawnnpc(4); //각각 4개의 npc를 소환하는 함수 만듬
     MainCharacter.bombNum = 0;
     MainCharacter.hp = 3;
-<<<<<<< HEAD
-    MainCharacter.plusBombNumItem = 3;     // 물폭탄 개수 초기화
-    MainCharacter.plusBombPowerItem = 2;   // 화력 초기화
-=======
     MainCharacter.plusBombNumItem = 3; // 물폭탄 개수 초기화
     MainCharacter.plusBombPowerItem = 2; // 화력 초기화
->>>>>>> Develop
     drawingTotalMap();
 
     return 1;
