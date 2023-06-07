@@ -1077,7 +1077,7 @@ void ProcessKeyInput() {
     return;
 }
 int main() {
-    int key;
+    int key,i,j;
     settingUiInit();
     srand(time(NULL));
     RemoveCursor();
@@ -1087,6 +1087,11 @@ int main() {
 
     while (1) {
         stageNum = 1;
+        for (i = 0; i < GBOARD_HEIGHT + 2; i++) {
+            for (j = 0; j < GBOARD_WIDTH + 2; j++) {
+                gameBoardInfo[i][j] = gameBoardInfo1[i][j];
+            }
+        }
         erazeWindow();
         while (1) { // 메뉴입니다.
             drawingGameMenu();
